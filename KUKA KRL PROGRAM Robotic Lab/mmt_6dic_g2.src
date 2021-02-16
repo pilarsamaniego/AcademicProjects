@@ -1,0 +1,308 @@
+&ACCESS RVP
+&REL 21
+&PARAM EDITMASK = *
+&PARAM TEMPLATE = C:\KRC\Roboter\Template\vorgabe
+DEF mmt_6dic_g2( )
+;FOLD INI;%{PE}
+    DECL Int Counter1
+    DECL Int n_steine, geordert_y, geordert_z,end_y
+    DECL E6POS PUNTO2
+    DECL E6POS PUNTO3
+    DECL E6POS PUNTO4
+    DECL E6POS PUNTO5
+    DECL E6POS PUNTO6
+    DECL E6POS PUNTO8
+    DECL BOOL BANDERA
+    DECL KRLMSGPAR_T Parameter[3]
+    DECL KRLMSG_T mymessage, mymessage1, mymessage2,mymessage3 
+    DECL KRLMSGOPT_T Option
+    DECL INT handle, handle1, handle2, handle3
+    DECL BOOL present, present1, eraser, eraser1, eraser2, eraser3
+    BANDERA = FALSE 
+      Counter1=0  
+      n_steine=0
+      PUNTO2=XP2      
+      PUNTO3=XP3
+      PUNTO4=XP4
+      PUNTO5=XP5
+      PUNTO6=XP6
+      PUNTO8=XP6
+      geordert_y = 0
+      geordert_z = 0
+      end_y=0
+  ;FOLD BASISTECH INI
+    GLOBAL INTERRUPT DECL 3 WHEN $STOPMESS==TRUE DO IR_STOPM ( )
+    INTERRUPT ON 3 
+    BAS (#INITMOV,0 )
+  ;ENDFOLD (BASISTECH INI)
+  ;FOLD USER INI
+    ;Make your modifications here
+
+  ;ENDFOLD (USER INI)
+;ENDFOLD (INI)
+
+;FOLD PTP HOME  Vel= 100 % DEFAULT;%{PE}%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+$BWDSTART = FALSE
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS (#PTP_PARAMS,100 )
+$H_POS=XHOME
+PTP  XHOME
+;ENDFOLD
+ 
+;FOLD Gripper SYN SET [1]Gripper State=[1]OPEN at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=1;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,1) PRIO=-1
+;ENDFOLD
+PUNTO4.X=XP4.X-100
+PUNTO3.X=XP3.X-100
+
+WHILE ( (Counter1 < 9) AND ($IN[1]==FALSE))
+   
+
+;FOLD SPTP P1 Vel=100 % PDAT3 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P1, 3:, 5:100, 7:PDAT3
+SPTP XP1 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP1), $BASE= SBASE( FP1.BASE_NO),$IPO_MODE= SIPO_MODE( FP1.IPO_FRAME), $LOAD= SLOAD( FP1.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT3), $GEAR_JERK[1]= SGEAR_JERK( PPDAT3)
+;ENDFOLD
+
+PUNTO2.X=XP2.X +10
+PUNTO2.Z=XP2.Z -10
+PUNTO2.Y=XP2.Y +3
+
+;FOLD SPTP P2 Vel=100 % PDAT2 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P2, 3:, 5:100, 7:PDAT2
+;;;SPTP PUNTO2 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP2), $BASE= SBASE( FP2.BASE_NO),$IPO_MODE= SIPO_MODE( FP2.IPO_FRAME), $LOAD= SLOAD( FP2.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT2), $GEAR_JERK[1]= SGEAR_JERK( PPDAT2)
+;ENDFOLD
+
+;FOLD SPTP P7 Vel=100 % PDAT10 Tool[1] Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P7, 3:, 5:100, 7:PDAT10
+SPTP XP7 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP7), $BASE= SBASE( FP7.BASE_NO),$IPO_MODE= SIPO_MODE( FP7.IPO_FRAME), $LOAD= SLOAD( FP7.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT10), $GEAR_JERK[1]= SGEAR_JERK( PPDAT10)
+;ENDFOLD
+;FOLD Gripper SYN SET [1]Gripper State=[2]CLOSE at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=2;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,2) PRIO=-1
+;ENDFOLD
+;FOLD SPTP P1 Vel=100 % PDAT3 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P1, 3:, 5:100, 7:PDAT3
+SPTP XP1 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP1), $BASE= SBASE( FP1.BASE_NO),$IPO_MODE= SIPO_MODE( FP1.IPO_FRAME), $LOAD= SLOAD( FP1.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT3), $GEAR_JERK[1]= SGEAR_JERK( PPDAT3)
+;ENDFOLD
+
+PUNTO4.Y=XP4.Y + 50*(Counter1)-100
+PUNTO3.Y=XP3.Y + 50*(Counter1)-100
+
+;FOLD SPTP PUNTO4 Vel=100 % PDAT5 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P4, 3:, 5:100, 7:PDAT5
+SPTP PUNTO4 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP4), $BASE= SBASE( FP4.BASE_NO),$IPO_MODE= SIPO_MODE( FP4.IPO_FRAME), $LOAD= SLOAD( FP4.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT5), $GEAR_JERK[1]= SGEAR_JERK( PPDAT5)
+;ENDFOLD
+
+;FOLD SPTP PUNTO3 Vel=100 % PDAT4 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P3, 3:, 5:100, 7:PDAT4
+SPTP PUNTO3 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP3), $BASE= SBASE( FP3.BASE_NO),$IPO_MODE= SIPO_MODE( FP3.IPO_FRAME), $LOAD= SLOAD( FP3.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT4), $GEAR_JERK[1]= SGEAR_JERK( PPDAT4)
+;ENDFOLD
+;FOLD Gripper SYN SET [1]Gripper State=[1]OPEN at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=1;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,1) PRIO=-1
+;ENDFOLD
+;FOLD SPTP PUNTO4 Vel=100 % PDAT5 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P4, 3:, 5:100, 7:PDAT5
+SPTP PUNTO4 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP4), $BASE= SBASE( FP4.BASE_NO),$IPO_MODE= SIPO_MODE( FP4.IPO_FRAME), $LOAD= SLOAD( FP4.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT5), $GEAR_JERK[1]= SGEAR_JERK( PPDAT5)
+;ENDFOLD
+
+Counter1=Counter1+1
+n_steine=n_steine+1
+
+ENDWHILE
+
+mymessage1 ={Modul[] "College", Nr 1908, Msg_txt[] "Verbaute Steine %1"}
+Option={ VL_STOP FALSE,  Clear_P_Reset TRUE,  Clear_P_SAW FALSE,  Log_to_DB TRUE}
+Parameter[1]={Par_Type #Value}
+Parameter[1].Par_Int=n_steine
+Parameter[2]={Par_Type #EMPTY}
+Parameter[3]={Par_Type #EMPTY}
+handle1=Set_KrlMsg(#STATE, mymessage1, Parameter[], Option)
+eraser1=FALSE
+
+;FOLD PTP HOME Vel=100 % DEFAULT;%{PE}%R 8.3.44,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+$BWDSTART=FALSE
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS(#PTP_PARAMS,100)
+$H_POS=XHOME
+PTP XHOME 
+;ENDFOLD
+
+
+   
+WHILE ( Counter1 > 0)
+ 
+   
+IF((($IN[2]==FALSE) and (geordert_y<5))) THEN
+   BANDERA = FALSE
+   mymessage ={Modul[] "College", Nr 1906, Msg_txt[] "Steine werden in y-Richtung aufgeraeumt"} 
+ENDIF   
+IF((($IN[2]==TRUE) and (geordert_z<5))) THEN
+   BANDERA = TRUE
+    mymessage ={Modul[] "College", Nr 1906, Msg_txt[] "Steine werden in z-Richtung gestapelt"}
+ENDIF
+   Option={ VL_STOP FALSE,  Clear_P_Reset TRUE,  Clear_P_SAW FALSE,  Log_to_DB TRUE}
+   Parameter[1]={Par_Type #EMPTY}
+   Parameter[2]={Par_Type #EMPTY}
+   Parameter[3]={Par_Type #EMPTY}
+   handle=Set_KrlMsg(#STATE, mymessage, Parameter[], Option)
+   eraser=FALSE
+  
+PUNTO4.Y=XP4.Y + 50*(Counter1-1)-100
+PUNTO3.Y=XP3.Y + 50*(Counter1-1)-100   
+ 
+;FOLD SPTP PUNTO4 Vel=100 % PDAT5 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P4, 3:, 5:100, 7:PDAT5
+SPTP PUNTO4 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP4), $BASE= SBASE( FP4.BASE_NO),$IPO_MODE= SIPO_MODE( FP4.IPO_FRAME), $LOAD= SLOAD( FP4.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT5), $GEAR_JERK[1]= SGEAR_JERK( PPDAT5)
+;ENDFOLD
+
+;FOLD SPTP PUNTO3 Vel=100 % PDAT4 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P3, 3:, 5:100, 7:PDAT4
+SPTP PUNTO3 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP3), $BASE= SBASE( FP3.BASE_NO),$IPO_MODE= SIPO_MODE( FP3.IPO_FRAME), $LOAD= SLOAD( FP3.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT4), $GEAR_JERK[1]= SGEAR_JERK( PPDAT4)
+;ENDFOLD
+
+;FOLD Gripper SYN SET [1]Gripper State=[2]CLOSE at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=2;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,2) PRIO=-1
+;ENDFOLD
+
+;FOLD SPTP PUNTO4 Vel=100 % PDAT5 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P4, 3:, 5:100, 7:PDAT5
+SPTP PUNTO4 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP4), $BASE= SBASE( FP4.BASE_NO),$IPO_MODE= SIPO_MODE( FP4.IPO_FRAME), $LOAD= SLOAD( FP4.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT5), $GEAR_JERK[1]= SGEAR_JERK( PPDAT5)
+;ENDFOLD
+
+
+
+;--------------------------------------------------------------------------------------
+
+IF ((BANDERA==FALSE) and (geordert_y<5)) THEN
+
+PUNTO6.Z=XP6.Z 
+PUNTO5.Z=XP5.Z 
+PUNTO6.X=XP6.X
+PUNTO5.X=XP5.X
+
+   
+PUNTO6.Y=XP6.Y - 30*(geordert_y+1)
+PUNTO5.Y=XP5.Y - 30*(geordert_y+1) 
+
+;FOLD SPTP PUNTO6 Vel=100 % PDAT8 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P6, 3:, 5:100, 7:PDAT8
+SPTP PUNTO6 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP6), $BASE= SBASE( FP6.BASE_NO),$IPO_MODE= SIPO_MODE( FP6.IPO_FRAME), $LOAD= SLOAD( FP6.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT8), $GEAR_JERK[1]= SGEAR_JERK( PPDAT8)
+;ENDFOLD
+
+;FOLD SPTP PUNTO5 Vel=100 % PDAT9 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P5, 3:, 5:100, 7:PDAT9
+SPTP PUNTO5 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP5), $BASE= SBASE( FP5.BASE_NO),$IPO_MODE= SIPO_MODE( FP5.IPO_FRAME), $LOAD= SLOAD( FP5.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT9), $GEAR_JERK[1]= SGEAR_JERK( PPDAT9)
+;ENDFOLD
+
+;FOLD Gripper SYN SET [1]Gripper State=[1]OPEN at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=1;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,1) PRIO=-1
+;ENDFOLD
+
+;FOLD SPTP PUNTO6 Vel=100 % PDAT8 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P6, 3:, 5:100, 7:PDAT8
+SPTP PUNTO6 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP6), $BASE= SBASE( FP6.BASE_NO),$IPO_MODE= SIPO_MODE( FP6.IPO_FRAME), $LOAD= SLOAD( FP6.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT8), $GEAR_JERK[1]= SGEAR_JERK( PPDAT8)
+;ENDFOLD
+
+geordert_y = geordert_y + 1 
+    
+ IF(geordert_y==5) THEN
+    BANDERA= TRUE
+    geordert_y = 5
+    end_y=1
+ ENDIF    
+ENDIF
+;--------------------------------------------------------------------------------------
+IF ((BANDERA==TRUE) and (geordert_z<5)) AND (end_y==0) THEN
+   
+   
+PUNTO6.Y=XP6.Y
+PUNTO5.Y=XP5.Y  
+PUNTO6.X=XP6.X+120
+PUNTO5.X=XP5.X+120
+   
+   ;IF (geordert_z==0) THEN
+      ;PUNTO6.Y=XP6.Y
+      ;PUNTO5.Y=XP5.Y
+   ;ENDIF
+
+PUNTO6.Z=XP6.Z + 27*(geordert_z)
+PUNTO5.Z=XP5.Z + 27*(geordert_z)
+PUNTO8.Z=XP6.Z + 27*(geordert_z)
+
+;FOLD SPTP PUNTO6 Vel=100 % PDAT8 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P6, 3:, 5:100, 7:PDAT8
+SPTP PUNTO6 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP6), $BASE= SBASE( FP6.BASE_NO),$IPO_MODE= SIPO_MODE( FP6.IPO_FRAME), $LOAD= SLOAD( FP6.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT8), $GEAR_JERK[1]= SGEAR_JERK( PPDAT8)
+;ENDFOLD   
+
+;FOLD SPTP PUNTO5 Vel=100 % PDAT9 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P5, 3:, 5:100, 7:PDAT9
+SPTP PUNTO5 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP5), $BASE= SBASE( FP5.BASE_NO),$IPO_MODE= SIPO_MODE( FP5.IPO_FRAME), $LOAD= SLOAD( FP5.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT9), $GEAR_JERK[1]= SGEAR_JERK( PPDAT9)
+;ENDFOLD
+
+;FOLD Gripper SYN SET [1]Gripper State=[1]OPEN at START Delay=0 ms ;%{PE}
+;FOLD Parameters Parameters ;%{h}
+;Params IlfProvider=GripperTech.GripperSynSet;setgripper=1;setstate=1;type=0;path=0;delay=0
+;ENDFOLD
+TRIGGER WHEN DISTANCE=0 DELAY=0 DO GRPg_SetState (1,1) PRIO=-1
+;ENDFOLD
+
+;FOLD SPTP PUNTO6 Vel=100 % PDAT8 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P6, 3:, 5:100, 7:PDAT8
+SPTP PUNTO6 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP6), $BASE= SBASE( FP6.BASE_NO),$IPO_MODE= SIPO_MODE( FP6.IPO_FRAME), $LOAD= SLOAD( FP6.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT8), $GEAR_JERK[1]= SGEAR_JERK( PPDAT8)
+;ENDFOLD   
+
+PUNTO8.X=XP6.X+120-35
+PUNTO8.Y=XP6.Y 
+;FOLD SPTP PUNTO8 Vel=100 % PDAT8 Tool[1]:mmt gruppe 2 w1 Base[0];%{PE}%R 8.3.44,%MKUKATPBASIS,%CSPLINE,%VSPTP_SB,%P 1:SPTP_SB, 2:P6, 3:, 5:100, 7:PDAT8
+SPTP PUNTO8 WITH $VEL_AXIS[1]= SVEL_JOINT( 100), $TOOL= STOOL2( FP6), $BASE= SBASE( FP6.BASE_NO),$IPO_MODE= SIPO_MODE( FP6.IPO_FRAME), $LOAD= SLOAD( FP6.TOOL_NO), $ACC_AXIS[1]= SACC_JOINT( PPDAT8), $GEAR_JERK[1]= SGEAR_JERK( PPDAT8)
+;ENDFOLD   
+
+geordert_z = geordert_z + 1
+
+IF(geordert_z==5) THEN
+    BANDERA= FALSE
+    geordert_z = 5
+ ENDIF  
+
+ENDIF
+
+end_y=0
+
+Counter1=Counter1-1
+
+ENDWHILE
+
+mymessage2 ={Modul[] "College", Nr 1909, Msg_txt[] "Georderte Steine in Y Richtung %1"}
+Option={ VL_STOP FALSE,  Clear_P_Reset TRUE,  Clear_P_SAW FALSE,  Log_to_DB TRUE}
+Parameter[1]={Par_Type #Value}
+Parameter[1].Par_Int=geordert_y
+Parameter[2]={Par_Type #EMPTY}
+Parameter[3]={Par_Type #EMPTY}
+handle2=Set_KrlMsg(#STATE, mymessage2, Parameter[], Option)
+eraser2=FALSE
+
+mymessage3 ={Modul[] "College", Nr 1910, Msg_txt[] "Georderte Steine in Z Richtung %1"}
+Option={ VL_STOP FALSE,  Clear_P_Reset TRUE,  Clear_P_SAW FALSE,  Log_to_DB TRUE}
+Parameter[1]={Par_Type #Value}
+Parameter[1].Par_Int=geordert_z
+Parameter[2]={Par_Type #EMPTY}
+Parameter[3]={Par_Type #EMPTY}
+handle3=Set_KrlMsg(#STATE, mymessage3, Parameter[], Option)
+eraser3=FALSE
+
+REPEAT
+eraser=Clear_KrlMsg(handle)
+present=Exists_KrlMsg(handle)
+eraser1=Clear_KrlMsg(handle1)
+present1=Exists_KrlMsg(handle1)
+UNTIL NOT(present AND present1) or (eraser AND eraser1)
+
+;FOLD PTP HOME Vel=100 % DEFAULT;%{PE}%R 8.3.44,%MKUKATPBASIS,%CMOVE,%VPTP,%P 1:PTP, 2:HOME, 3:, 5:100, 7:DEFAULT
+$BWDSTART=FALSE
+PDAT_ACT=PDEFAULT
+FDAT_ACT=FHOME
+BAS(#PTP_PARAMS,100)
+$H_POS=XHOME
+PTP XHOME 
+;ENDFOLD
+END
